@@ -14,9 +14,16 @@ class Thing:
     def has(self, attr: str) -> bool:
         return attr in self.attr
 
+    def __eq__(self, __o: object) -> bool:
+
+        if isinstance(__o, Thing):
+            return self.attr == __o.attr
+        elif isinstance(__o, dict):
+            return self.attr == __o
+
 
 class Class:
-    def __init__(self, name: str, has: dict, attrs: dict):
+    def __init__(self, name: str, has: dict = {}, attrs: dict = {}):
         self.name = name
 
         for i in has.values():
