@@ -7,8 +7,11 @@ class TestThing(unittest.TestCase):
     def setUp(self) -> None:
         self.thing = adl.Thing()
 
-    def test_thing(self):
-        self.assertTrue(True)
+    def test_has(self):
+        self.thing.attr = {"a": 1, "b": 2}
+        self.assertTrue(self.thing.has("a"))
+        self.assertTrue(self.thing.has("b"))
+        self.assertFalse(self.thing.has("c"))
 
 
 if __name__ == "__main__":
