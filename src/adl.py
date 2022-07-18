@@ -36,7 +36,7 @@ class Class:
     def is_member(self, thing: Thing) -> bool:
 
         for attr in self.has:
-            if attr not in thing.attr or attr:
+            if attr not in thing.attr:
                 return False
         for attr in self.attrs:
             if self.attrs[attr] != thing.attr[attr]:
