@@ -85,3 +85,9 @@ class Universe:
     def get_class(self, _class: Class) -> List[Thing]:
 
         return [thing for thing in self.things if _class.is_member(thing)]
+
+    def exists(self, _class: Class) -> bool:
+        return len(self.get_class(_class)) > 0
+
+    def individual(self, _class: Class) -> Thing:
+        return len(self.get_class(_class)) == 1
