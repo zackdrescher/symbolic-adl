@@ -23,7 +23,7 @@ class Thing:
 
 
 class Class:
-    def __init__(self, name: str, has: dict = {}, attrs: dict = {}):
+    def __init__(self, name: str, has: dict = {}, attr: dict = {}):
         self.name = name
 
         for i in has.values():
@@ -31,15 +31,15 @@ class Class:
                 raise Exception("has must be a dict of callables")
 
         self.has = has
-        self.attrs = attrs
+        self.attr = attr
 
     def is_member(self, thing: Thing) -> bool:
 
         for attr in self.has:
             if attr not in thing.attr:
                 return False
-        for attr in self.attrs:
-            if not (attr in thing.attr and self.attrs[attr] == thing.attr[attr]):
+        for attr in self.attr:
+            if not (attr in thing.attr and self.attr[attr] == thing.attr[attr]):
                 return False
 
         return True
@@ -48,7 +48,7 @@ class Class:
         return {k: v() for k, v in self.has.items()}
 
     def create(self) -> Thing:
-        return Thing.from_attr({**self.generate(), **self.attrs})
+        return Thing.from_attr({**self.generate(), **self.attr})
 
 
 class Universe:

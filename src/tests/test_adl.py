@@ -52,7 +52,7 @@ class TestHasClass(unittest.TestCase):
 
 class TestAttrClass(unittest.TestCase):
     def setUp(self) -> None:
-        self._class = adl.Class("something", attrs={"a": 1, "b": 2})
+        self._class = adl.Class("something", attr={"a": 1, "b": 2})
 
     def test_is_member(self):
         self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
