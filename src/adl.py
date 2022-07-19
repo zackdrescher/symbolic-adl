@@ -39,7 +39,7 @@ class Class:
             if attr not in thing.attr:
                 return False
         for attr in self.attrs:
-            if self.attrs[attr] != thing.attr[attr]:
+            if not (attr in thing.attr and self.attrs[attr] == thing.attr[attr]):
                 return False
 
         return True
