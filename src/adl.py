@@ -27,6 +27,14 @@ class Thing:
 
 
 class Class:
+    @classmethod
+    def create_from(
+        cls, name: str, c: "Class", has: dict = {}, attr: dict = {}
+    ) -> "Class":
+        has.update(c.has)
+        attr.update(c.attr)
+        return cls(name, has, attr)
+
     def __init__(self, name: str, has: dict = {}, attr: dict = {}):
         self.name = name
 

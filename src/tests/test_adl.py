@@ -226,5 +226,46 @@ class TestAttrClass(unittest.TestCase):
         )
 
 
+class TestClassCraeteFrom(unittest.TestCase):
+    def setUp(self) -> None:
+
+        self._class = adl.Class(
+            "something", has={"c": lambda: 1}, attr={"a": 1, "b": 2}
+        )
+
+    def test_has(self):
+
+        t = adl.Class.create_from("sub", self._class, has={"d": lambda: 1})
+
+        self.assertTrue("c" in t.has)
+        self.assertTrue("d" in t.has)
+        self.assertTrue("a" in t.attr)
+        self.assertTrue("b" in t.attr)
+
+        self.assertFalse("c" in t.attr)
+        self.assertFalse("d" in t.attr)
+        self.assertFalse("a" in t.has)
+        self.assertFalse("b" in t.has)
+
+    def test_attr(self):
+
+        t = adl.Class.create_from("sub", self._class, attr={"d": 1})
+
+        self.assertTrue("c" in t.has)
+        self.assertTrue("d" in t.attr)
+        self.assertTrue("a" in t.attr)
+        self.assertTrue("b" in t.attr)
+
+        self.assertFalse("c" in t.attr)
+        self.assertFalse("d" in t.has)
+        self.assertFalse("a" in t.has)
+        self.assertFalse("b" in t.has)
+
+    def test_species(self):
+        t = adl.Class.create_from("sub", self._class, has={"d": lambda: 1})
+
+        self.assertTrue(t.is_species_of(self._class))
+
+
 if __name__ == "__main__":
     unittest.main()
