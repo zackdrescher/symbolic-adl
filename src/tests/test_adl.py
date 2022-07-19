@@ -19,6 +19,13 @@ class TestNonEmptyThing(unittest.TestCase):
         self.assertFalse(self.thing == {"a": 1, "b": 3})
         self.assertFalse(self.thing == {"a": 1, "b": 2, "c": 3})
 
+    def test_create_class(self):
+        class_ = self.thing.create_class("Thing", ["a", "b"])
+        self.assertTrue(class_.is_member(self.thing))
+
+        class_ = self.thing.create_class("Thing", ["b"])
+        self.assertTrue(class_.is_member(self.thing))
+
 
 class TestEmptyClass(unittest.TestCase):
     def setUp(self) -> None:

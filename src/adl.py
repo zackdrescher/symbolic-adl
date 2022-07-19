@@ -21,6 +21,10 @@ class Thing:
         elif isinstance(__o, dict):
             return self.attr == __o
 
+    def create_class(self, name: str, attrs: List[str]) -> "Class":
+        class_attr = {k: v for k, v in self.attr.items() if k in attrs}
+        return Class(name, attr=class_attr)
+
 
 class Class:
     def __init__(self, name: str, has: dict = {}, attr: dict = {}):
