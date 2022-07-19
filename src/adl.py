@@ -60,7 +60,7 @@ class Class:
 def is_species(genus: Class, species: Class) -> bool:
     # check if speceies has all attributes of genus
     for attr in genus.has:
-        if attr not in species.has:
+        if not (attr in species.has or attr in species.attr):
             return False
     for attr in genus.attr:
         if not (attr in species.attr and species.attr[attr] == genus.attr[attr]):

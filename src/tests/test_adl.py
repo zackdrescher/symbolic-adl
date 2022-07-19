@@ -115,6 +115,22 @@ class TestHasClass(unittest.TestCase):
                 adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
             )
         )
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", attr={"a": 1, "b": 2}))
+        )
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", attr={"a": 3, "b": 4}))
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", attr={"a": 3, "b": 4, "c": 5})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5})
+            )
+        )
 
 
 class TestAttrClass(unittest.TestCase):
@@ -186,6 +202,20 @@ class TestAttrClass(unittest.TestCase):
                     {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3},
                     attr={"a": 1, "b": 2},
                 )
+            )
+        )
+
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", attr={"a": 3, "b": 4}))
+        )
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.Class("something", attr={"a": 3, "b": 4, "c": 5})
+            )
+        )
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.Class("something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5})
             )
         )
 
