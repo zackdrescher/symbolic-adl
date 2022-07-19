@@ -40,6 +40,32 @@ class Suits(RandomEnum):
     WANDS = auto()
 
 
+@unique
+class MajorArcana(RandomEnum):
+    THE_FOOL = auto()
+    THE_MAGICIAN = auto()
+    THE_HGIH_PRIESTESS = auto()
+    THE_EMPRESS = auto()
+    THE_EMPEROR = auto()
+    THE_HIEROPHANT = auto()
+    THE_LOVERS = auto()
+    THE_CHARIOT = auto()
+    JUSTICE = auto()
+    THE_HERMIT = auto()
+    THE_WHEEL = auto()
+    STRENGTH = auto()
+    THE_HANGED_MAN = auto()
+    DEATH = auto()
+    TEMPERANCE = auto()
+    THE_DEVIL = auto()
+    THE_TOWER = auto()
+    THE_STAR = auto()
+    THE_MOON = auto()
+    THE_SUN = auto()
+    JUDGEMENT = auto()
+    THE_WORLD = auto()
+
+
 if __name__ == "__main__":
 
     c = adl.Class(
