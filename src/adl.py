@@ -50,6 +50,23 @@ class Class:
     def create(self) -> Thing:
         return Thing.from_attr({**self.generate(), **self.attr})
 
+    def is_species_of(self, other: "Class") -> bool:
+        return is_species(other, self)
+
+    def is_genus_of(self, other: "Class") -> bool:
+        return is_species(self, other)
+
+
+def is_species(genus: Class, species: Class) -> bool:
+    # check if speceies has all attributes of genus
+    for attr in genus.has:
+        if attr not in species.has:
+            return False
+    for attr in genus.attr:
+        if not (attr in species.attr and species.attr[attr] == genus.attr[attr]):
+            return False
+    return True
+
 
 class Universe:
     def __init__(self):

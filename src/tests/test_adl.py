@@ -49,6 +49,35 @@ class TestHasClass(unittest.TestCase):
     def test_create(self):
         self.assertEqual(self._class.create(), adl.Thing.from_attr({"a": 1, "b": 2}))
 
+    def test_is_genus(self):
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+        )
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+        )
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+        )
+        self.assertFalse(self._class.is_genus_of(adl.Class("something")))
+        self.assertFalse(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
+            )
+        )
+
 
 class TestAttrClass(unittest.TestCase):
     def setUp(self) -> None:
@@ -68,6 +97,59 @@ class TestAttrClass(unittest.TestCase):
 
     def test_create(self):
         self.assertEqual(self._class.create(), adl.Thing.from_attr({"a": 1, "b": 2}))
+
+    def test_is_genus(self):
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+        )
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+        )
+        self.assertFalse(
+            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+        )
+        self.assertFalse(self._class.is_genus_of(adl.Class("something")))
+        self.assertFalse(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+            )
+        )
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+            )
+        )
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
+            )
+        )
+
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class(
+                    "something", {"a": lambda: 1, "b": lambda: 2}, attr={"a": 1, "b": 2}
+                )
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", attr={"a": 1, "b": 2}))
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", attr={"a": 1, "b": 2, "c": 3})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class(
+                    "something",
+                    {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3},
+                    attr={"a": 1, "b": 2},
+                )
+            )
+        )
 
 
 if __name__ == "__main__":
