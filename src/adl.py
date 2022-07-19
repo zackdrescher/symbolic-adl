@@ -79,6 +79,9 @@ class Universe:
     def add_thing(self, thing: Thing):
         self.things.append(thing)
 
+    def add_thing(self, thing: dict):
+        self.things.append(Thing.from_attr(thing))
+
     def get_class(self, _class: Class) -> List[Thing]:
 
         return [thing for thing in self.things if _class.is_member(thing)]
