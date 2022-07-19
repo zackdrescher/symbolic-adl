@@ -68,6 +68,10 @@ class MajorArcana(RandomEnum):
 
 if __name__ == "__main__":
 
-    c = adl.Class(
+    ma = adl.Class(
         "minorArcana", {"faceValue": FaceValues.get_random, "suit": Suits.get_random}
     )
+
+    k = adl.Class("kingdom", has={"units": lambda: [ma.create() for _ in range(4)]})
+
+    print("done~")

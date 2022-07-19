@@ -10,6 +10,13 @@
             "request": "launch",
             "module": "unittest",
             "justMyCode": true
+        },
+        {
+            "name": "attrs",
+            "type": "python",
+            "request": "launch",
+            "module": "src.attrs",
+            "justMyCode": true
         }
     ]
 }

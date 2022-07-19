@@ -87,6 +87,9 @@ class Universe:
     def add_thing(self, thing: Thing):
         self.things.append(thing)
 
+    def add_things(self, things: List[Thing]):
+        self.things.extend(things)
+
     def add_thing(self, thing: dict):
         self.things.append(Thing.from_attr(thing))
 
