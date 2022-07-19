@@ -26,8 +26,46 @@ class TestEmptyClass(unittest.TestCase):
 
         self._class = adl.Class("something")
 
-    def test_generate(self):
-        self.assertEqual(self._class.generate(), adl.Thing())
+    def test_create(self):
+        self.assertEqual(self._class.create(), adl.Thing())
+
+    def test_is_member(self):
+        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
+        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 3})))
+        self.assertTrue(
+            self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+        )
+        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"b": 2, "c": 3})))
+        self.assertTrue(self._class.is_member(adl.Thing()))
+
+    def test_is_genus(self):
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+        )
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+        )
+        self.assertTrue(
+            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+        )
+        self.assertTrue(self._class.is_genus_of(adl.Class("something")))
+        self.assertTrue(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
+            )
+        )
 
 
 class TestHasClass(unittest.TestCase):
