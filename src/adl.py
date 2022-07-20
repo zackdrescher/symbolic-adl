@@ -14,6 +14,11 @@ class Thing:
     def has(self, attr: str) -> bool:
         return attr in self.attr
 
+    def get(self, attr: str) -> object:
+        if not self.has(attr):
+            raise ValueError(f"{self} does not have {attr}")
+        return self.attr[attr]
+
     def __eq__(self, __o: object) -> bool:
 
         if isinstance(__o, Thing):
