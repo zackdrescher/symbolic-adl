@@ -20,10 +20,23 @@ class Thing:
             return self.attr == __o.attr
         elif isinstance(__o, dict):
             return self.attr == __o
+        else:
+            return False
 
     def create_class(self, name: str, attrs: List[str]) -> "Class":
         class_attr = {k: v for k, v in self.attr.items() if k in attrs}
         return Class(name, attr=class_attr)
+
+    def contains(self, attr: str, thing: "Thing") -> bool:
+
+        if not self.has(attr):
+            raise ValueError(f"{self} does not have {attr}")
+
+        attr = self.attr[attr]
+        if not isinstance(attr, list):
+            raise ValueError(f"{attr} is not a collection")
+
+        return thing in attr
 
 
 class Class:
@@ -51,7 +64,15 @@ class Class:
             if attr not in thing.attr:
                 return False
         for attr in self.attr:
-            if not (attr in thing.attr and self.attr[attr] == thing.attr[attr]):
+            if attr not in thing.attr:
+                return False
+            a = self.attr[attr]
+            if isinstance(a, list):
+                # check that everything in this attr is in the thing
+                for t in a:
+                    if not thing.contains(attr, t):
+                        return False
+            elif self.attr[attr] != thing.attr[attr]:
                 return False
 
         return True

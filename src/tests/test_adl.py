@@ -74,6 +74,21 @@ class TestEmptyClass(unittest.TestCase):
         )
 
 
+class TestThingContains(unittest.TestCase):
+    def setUp(self) -> None:
+        self.thing = adl.Thing.from_attr({"a": 1, "b": 2})
+        self.container = adl.Thing.from_attr({"contains": []})
+
+    def test_contains(self):
+        self.container.attr["contains"].append(self.thing)
+
+        self.assertTrue(self.container.contains("contains", self.thing))
+
+    def test_doesnt_contains(self):
+
+        self.assertFalse(self.container.contains("contains", self.thing))
+
+
 class TestHasClass(unittest.TestCase):
     def setUp(self) -> None:
         self._class = adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
