@@ -241,6 +241,38 @@ class TestAttrClass(unittest.TestCase):
         )
 
 
+class TestContianerClass(unittest.TestCase):
+    def setUp(self) -> None:
+        self.thing = adl.Thing.from_attr({"a": 1, "b": 2})
+
+        self.container_class = adl.Class("container", has={"contains": lambda: []})
+        self.container_thing = self.container_class.create()
+
+        self.thing_container_class = adl.Class(
+            "thingContainer", attr={"contains": [self.thing]}
+        )
+
+    def test_is_not_member(self):
+
+        self.assertFalse(self.thing_container_class.is_member(self.container_thing))
+
+        other_thing = adl.Thing.from_attr({"c": 3})
+        self.container_thing.get("contains").append(other_thing)
+        self.assertFalse(self.thing_container_class.is_member(self.container_thing))
+
+    def test_is_member(self):
+        self.container_thing.get("contains").append(self.thing)
+        self.assertTrue(self.thing_container_class.is_member(self.container_thing))
+
+        other_thing = adl.Thing.from_attr({"c": 3})
+        self.container_thing.get("contains").append(other_thing)
+        self.assertTrue(self.thing_container_class.is_member(self.container_thing))
+
+    def test_genus(self):
+
+        self.assertTrue(self.container_class.is_genus_of(self.thing_container_class))
+
+
 class TestClassCraeteFrom(unittest.TestCase):
     def setUp(self) -> None:
 
