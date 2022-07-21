@@ -1,11 +1,11 @@
 import unittest
 
-from .. import adl
+from .. import symblog
 
 
 class TestNonEmptyThing(unittest.TestCase):
     def setUp(self) -> None:
-        self.thing = adl.Thing()
+        self.thing = symblog.Thing()
 
         self.thing.attr = {"a": 1, "b": 2}
 
@@ -20,60 +20,69 @@ class TestNonEmptyThing(unittest.TestCase):
         self.assertFalse(self.thing == {"a": 1, "b": 2, "c": 3})
 
     def test_create_class(self):
-        class_ = self.thing.create_class("Thing", ["a", "b"])
+        class_ = symblog.AdjunctClass.create_from_thing("Thing", self.thing, ["a", "b"])
         self.assertTrue(class_.is_member(self.thing))
 
-        class_ = self.thing.create_class("Thing", ["b"])
+        class_ = symblog.AdjunctClass.create_from_thing("Thing", self.thing, ["b"])
+        self.assertTrue(class_.is_member(self.thing))
+
+        class_ = symblog.AdjunctClass.create_from_thing("Thing", self.thing)
         self.assertTrue(class_.is_member(self.thing))
 
 
 class TestEmptyClass(unittest.TestCase):
     def setUp(self) -> None:
 
-        self._class = adl.AdjunctClass("something")
+        self._class = symblog.AdjunctClass("something")
 
     def test_create(self):
-        self.assertEqual(self._class.create(), adl.Thing())
+        self.assertEqual(self._class.create(), symblog.Thing())
 
     def test_is_member(self):
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 3})))
         self.assertTrue(
-            self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2}))
         )
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"b": 2, "c": 3})))
-        self.assertTrue(self._class.is_member(adl.Thing()))
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 3}))
+        )
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+        )
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"b": 2, "c": 3}))
+        )
+        self.assertTrue(self._class.is_member(symblog.Thing()))
 
     def test_is_genus(self):
         self.assertTrue(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertTrue(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertTrue(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertTrue(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertTrue(self._class.is_genus_of(symblog.AdjunctClass("something")))
         self.assertTrue(
-            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", attr={"a": 1}))
         )
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
+                symblog.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
                 )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
                 )
             )
@@ -82,8 +91,8 @@ class TestEmptyClass(unittest.TestCase):
 
 class TestThingContains(unittest.TestCase):
     def setUp(self) -> None:
-        self.thing = adl.Thing.from_attr({"a": 1, "b": 2})
-        self.container = adl.Thing.from_attr({"contains": []})
+        self.thing = symblog.Thing.from_attr({"a": 1, "b": 2})
+        self.container = symblog.Thing.from_attr({"contains": []})
 
     def test_contains(self):
         self.container.attr["contains"].append(self.thing)
@@ -97,75 +106,85 @@ class TestThingContains(unittest.TestCase):
 
 class TestHasClass(unittest.TestCase):
     def setUp(self) -> None:
-        self._class = adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
+        self._class = symblog.AdjunctClass(
+            "something", {"a": lambda: 1, "b": lambda: 2}
+        )
 
     def test_is_member(self):
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 3})))
         self.assertTrue(
-            self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2}))
         )
-        self.assertFalse(self._class.is_member(adl.Thing.from_attr({"b": 2, "c": 3})))
-        self.assertFalse(self._class.is_member(adl.Thing()))
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 3}))
+        )
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+        )
+        self.assertFalse(
+            self._class.is_member(symblog.Thing.from_attr({"b": 2, "c": 3}))
+        )
+        self.assertFalse(self._class.is_member(symblog.Thing()))
 
     def test_generate(self):
         self.assertEqual(self._class.generate(), {"a": 1, "b": 2})
 
     def test_create(self):
-        self.assertEqual(self._class.create(), adl.Thing.from_attr({"a": 1, "b": 2}))
+        self.assertEqual(
+            self._class.create(), symblog.Thing.from_attr({"a": 1, "b": 2})
+        )
 
     def test_is_genus(self):
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertFalse(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertFalse(self._class.is_genus_of(symblog.AdjunctClass("something")))
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", attr={"a": 1}))
         )
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
+                symblog.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
                 )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
                 )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 1, "b": 2})
+                symblog.AdjunctClass("something", attr={"a": 1, "b": 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 3, "b": 4})
+                symblog.AdjunctClass("something", attr={"a": 3, "b": 4})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
+                symblog.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5}
                 )
             )
@@ -174,52 +193,60 @@ class TestHasClass(unittest.TestCase):
 
 class TestAttrClass(unittest.TestCase):
     def setUp(self) -> None:
-        self._class = adl.AdjunctClass("something", attr={"a": 1, "b": 2})
+        self._class = symblog.AdjunctClass("something", attr={"a": 1, "b": 2})
 
     def test_is_member(self):
-        self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
-        self.assertFalse(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 3})))
         self.assertTrue(
-            self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2}))
         )
-        self.assertFalse(self._class.is_member(adl.Thing.from_attr({"b": 2, "c": 3})))
-        self.assertFalse(self._class.is_member(adl.Thing()))
+        self.assertFalse(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 3}))
+        )
+        self.assertTrue(
+            self._class.is_member(symblog.Thing.from_attr({"a": 1, "b": 2, "c": 3}))
+        )
+        self.assertFalse(
+            self._class.is_member(symblog.Thing.from_attr({"b": 2, "c": 3}))
+        )
+        self.assertFalse(self._class.is_member(symblog.Thing()))
 
     def test_generate(self):
         self.assertEqual(self._class.generate(), {})
 
     def test_create(self):
-        self.assertEqual(self._class.create(), adl.Thing.from_attr({"a": 1, "b": 2}))
+        self.assertEqual(
+            self._class.create(), symblog.Thing.from_attr({"a": 1, "b": 2})
+        )
 
     def test_is_genus(self):
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertFalse(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertFalse(self._class.is_genus_of(symblog.AdjunctClass("something")))
         self.assertFalse(
-            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+            self._class.is_genus_of(symblog.AdjunctClass("something", attr={"a": 1}))
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
+                symblog.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
                 )
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
                 )
             )
@@ -227,24 +254,24 @@ class TestAttrClass(unittest.TestCase):
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2}, attr={"a": 1, "b": 2}
                 )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 1, "b": 2})
+                symblog.AdjunctClass("something", attr={"a": 1, "b": 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 1, "b": 2, "c": 3})
+                symblog.AdjunctClass("something", attr={"a": 1, "b": 2, "c": 3})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something",
                     {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3},
                     attr={"a": 1, "b": 2},
@@ -254,17 +281,17 @@ class TestAttrClass(unittest.TestCase):
 
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 3, "b": 4})
+                symblog.AdjunctClass("something", attr={"a": 3, "b": 4})
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
+                symblog.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.AdjunctClass(
+                symblog.AdjunctClass(
                     "something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5}
                 )
             )
@@ -273,14 +300,14 @@ class TestAttrClass(unittest.TestCase):
 
 class TestContianerClass(unittest.TestCase):
     def setUp(self) -> None:
-        self.thing = adl.Thing.from_attr({"a": 1, "b": 2})
+        self.thing = symblog.Thing.from_attr({"a": 1, "b": 2})
 
-        self.container_class = adl.AdjunctClass(
+        self.container_class = symblog.AdjunctClass(
             "container", has={"contains": lambda: []}
         )
         self.container_thing = self.container_class.create()
 
-        self.thing_container_class = adl.AdjunctClass(
+        self.thing_container_class = symblog.AdjunctClass(
             "thingContainer", attr={"contains": [self.thing]}
         )
 
@@ -288,7 +315,7 @@ class TestContianerClass(unittest.TestCase):
 
         self.assertFalse(self.thing_container_class.is_member(self.container_thing))
 
-        other_thing = adl.Thing.from_attr({"c": 3})
+        other_thing = symblog.Thing.from_attr({"c": 3})
         self.container_thing.get("contains").append(other_thing)
         self.assertFalse(self.thing_container_class.is_member(self.container_thing))
 
@@ -296,7 +323,7 @@ class TestContianerClass(unittest.TestCase):
         self.container_thing.get("contains").append(self.thing)
         self.assertTrue(self.thing_container_class.is_member(self.container_thing))
 
-        other_thing = adl.Thing.from_attr({"c": 3})
+        other_thing = symblog.Thing.from_attr({"c": 3})
         self.container_thing.get("contains").append(other_thing)
         self.assertTrue(self.thing_container_class.is_member(self.container_thing))
 
@@ -308,13 +335,15 @@ class TestContianerClass(unittest.TestCase):
 class TestClassCraeteFrom(unittest.TestCase):
     def setUp(self) -> None:
 
-        self._class = adl.AdjunctClass(
+        self._class = symblog.AdjunctClass(
             "something", has={"c": lambda: 1}, attr={"a": 1, "b": 2}
         )
 
     def test_has(self):
 
-        t = adl.AdjunctClass.create_from("sub", self._class, has={"d": lambda: 1})
+        t = symblog.AdjunctClass.create_from_class(
+            "sub", self._class, has={"d": lambda: 1}
+        )
 
         self.assertTrue("c" in t.has)
         self.assertTrue("d" in t.has)
@@ -328,7 +357,7 @@ class TestClassCraeteFrom(unittest.TestCase):
 
     def test_attr(self):
 
-        t = adl.AdjunctClass.create_from("sub", self._class, attr={"d": 1})
+        t = symblog.AdjunctClass.create_from_class("sub", self._class, attr={"d": 1})
 
         self.assertTrue("c" in t.has)
         self.assertTrue("d" in t.attr)
@@ -341,7 +370,9 @@ class TestClassCraeteFrom(unittest.TestCase):
         self.assertFalse("b" in t.has)
 
     def test_species(self):
-        t = adl.AdjunctClass.create_from("sub", self._class, has={"d": lambda: 1})
+        t = symblog.AdjunctClass.create_from_class(
+            "sub", self._class, has={"d": lambda: 1}
+        )
 
         self.assertTrue(t.is_species_of(self._class))
 
