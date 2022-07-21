@@ -31,9 +31,9 @@ class Thing:
         else:
             return False
 
-    def create_class(self, name: str, attrs: List[str]) -> "Class":
+    def create_class(self, name: str, attrs: List[str]) -> "AdjunctClass":
         class_attr = {k: v for k, v in self.attr.items() if k in attrs}
-        return Class(name, attr=class_attr)
+        return AdjunctClass(name, attr=class_attr)
 
     def contains(self, attr: str, thing: "Thing") -> bool:
 
@@ -47,7 +47,7 @@ class Thing:
         return thing in attr
 
 
-class Class:
+class AdjunctClass:
     """A class a set of attributes that describte a type of thing.
     Classes can represent a group of things, or a an individual thing.
     Classes can describe things that have a specific attribute or specific
@@ -55,8 +55,8 @@ class Class:
 
     @classmethod
     def create_from(
-        cls, name: str, c: "Class", has: dict = {}, attr: dict = {}
-    ) -> "Class":
+        cls, name: str, c: "AdjunctClass", has: dict = {}, attr: dict = {}
+    ) -> "AdjunctClass":
         has.update(c.has)
         attr.update(c.attr)
         return cls(name, has, attr)
@@ -96,14 +96,14 @@ class Class:
     def create(self) -> Thing:
         return Thing.from_attr({**self.generate(), **self.attr})
 
-    def is_species_of(self, other: "Class") -> bool:
+    def is_species_of(self, other: "AdjunctClass") -> bool:
         return is_species(other, self)
 
-    def is_genus_of(self, other: "Class") -> bool:
+    def is_genus_of(self, other: "AdjunctClass") -> bool:
         return is_species(self, other)
 
 
-def is_species(genus: Class, species: Class) -> bool:
+def is_species(genus: AdjunctClass, species: AdjunctClass) -> bool:
     # check if speceies has all attributes of genus
     for attr in genus.has:
         if not (attr in species.has or attr in species.attr):
@@ -132,12 +132,12 @@ class Universe:
     def add_thing(self, thing: dict):
         self.things.append(Thing.from_attr(thing))
 
-    def get_class(self, _class: Class) -> List[Thing]:
+    def get_class(self, _class: AdjunctClass) -> List[Thing]:
 
         return [thing for thing in self.things if _class.is_member(thing)]
 
-    def exists(self, _class: Class) -> bool:
+    def exists(self, _class: AdjunctClass) -> bool:
         return len(self.get_class(_class)) > 0
 
-    def individual(self, _class: Class) -> Thing:
+    def individual(self, _class: AdjunctClass) -> Thing:
         return len(self.get_class(_class)) == 1

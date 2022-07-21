@@ -68,10 +68,12 @@ class MajorArcana(RandomEnum):
 
 if __name__ == "__main__":
 
-    ma = adl.Class(
+    ma = adl.AdjunctClass(
         "minorArcana", {"faceValue": FaceValues.get_random, "suit": Suits.get_random}
     )
 
-    k = adl.Class("kingdom", has={"units": lambda: [ma.create() for _ in range(4)]})
+    k = adl.AdjunctClass(
+        "kingdom", has={"units": lambda: [ma.create() for _ in range(4)]}
+    )
 
     print("done~")

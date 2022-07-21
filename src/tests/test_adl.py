@@ -30,7 +30,7 @@ class TestNonEmptyThing(unittest.TestCase):
 class TestEmptyClass(unittest.TestCase):
     def setUp(self) -> None:
 
-        self._class = adl.Class("something")
+        self._class = adl.AdjunctClass("something")
 
     def test_create(self):
         self.assertEqual(self._class.create(), adl.Thing())
@@ -46,30 +46,36 @@ class TestEmptyClass(unittest.TestCase):
 
     def test_is_genus(self):
         self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertTrue(self._class.is_genus_of(adl.Class("something")))
-        self.assertTrue(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+        self.assertTrue(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertTrue(
+            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+        )
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
+                )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
+                )
             )
         )
 
@@ -91,7 +97,7 @@ class TestThingContains(unittest.TestCase):
 
 class TestHasClass(unittest.TestCase):
     def setUp(self) -> None:
-        self._class = adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+        self._class = adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
 
     def test_is_member(self):
         self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
@@ -110,53 +116,65 @@ class TestHasClass(unittest.TestCase):
 
     def test_is_genus(self):
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertFalse(self._class.is_genus_of(adl.Class("something")))
-        self.assertFalse(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+        self.assertFalse(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertFalse(
+            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+        )
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
+                )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
-            )
-        )
-        self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", attr={"a": 1, "b": 2}))
-        )
-        self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", attr={"a": 3, "b": 4}))
-        )
-        self.assertTrue(
-            self._class.is_genus_of(
-                adl.Class("something", attr={"a": 3, "b": 4, "c": 5})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
+                )
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5})
+                adl.AdjunctClass("something", attr={"a": 1, "b": 2})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.AdjunctClass("something", attr={"a": 3, "b": 4})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.AdjunctClass(
+                    "something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5}
+                )
             )
         )
 
 
 class TestAttrClass(unittest.TestCase):
     def setUp(self) -> None:
-        self._class = adl.Class("something", attr={"a": 1, "b": 2})
+        self._class = adl.AdjunctClass("something", attr={"a": 1, "b": 2})
 
     def test_is_member(self):
         self.assertTrue(self._class.is_member(adl.Thing.from_attr({"a": 1, "b": 2})))
@@ -175,50 +193,58 @@ class TestAttrClass(unittest.TestCase):
 
     def test_is_genus(self):
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 1}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 1}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"a": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"a": lambda: 2}))
         )
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", {"b": lambda: 2}))
+            self._class.is_genus_of(adl.AdjunctClass("something", {"b": lambda: 2}))
         )
-        self.assertFalse(self._class.is_genus_of(adl.Class("something")))
-        self.assertFalse(self._class.is_genus_of(adl.Class("something", attr={"a": 1})))
+        self.assertFalse(self._class.is_genus_of(adl.AdjunctClass("something")))
+        self.assertFalse(
+            self._class.is_genus_of(adl.AdjunctClass("something", attr={"a": 1}))
+        )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2})
+                adl.AdjunctClass("something", {"a": lambda: 1, "b": lambda: 2})
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3}
+                )
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.Class("something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3})
+                adl.AdjunctClass(
+                    "something", {"a": lambda: 1, "b": lambda: 2}, attr={"c": 3}
+                )
             )
         )
 
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class(
+                adl.AdjunctClass(
                     "something", {"a": lambda: 1, "b": lambda: 2}, attr={"a": 1, "b": 2}
                 )
             )
         )
         self.assertTrue(
-            self._class.is_genus_of(adl.Class("something", attr={"a": 1, "b": 2}))
-        )
-        self.assertTrue(
             self._class.is_genus_of(
-                adl.Class("something", attr={"a": 1, "b": 2, "c": 3})
+                adl.AdjunctClass("something", attr={"a": 1, "b": 2})
             )
         )
         self.assertTrue(
             self._class.is_genus_of(
-                adl.Class(
+                adl.AdjunctClass("something", attr={"a": 1, "b": 2, "c": 3})
+            )
+        )
+        self.assertTrue(
+            self._class.is_genus_of(
+                adl.AdjunctClass(
                     "something",
                     {"a": lambda: 1, "b": lambda: 2, "c": lambda: 3},
                     attr={"a": 1, "b": 2},
@@ -227,16 +253,20 @@ class TestAttrClass(unittest.TestCase):
         )
 
         self.assertFalse(
-            self._class.is_genus_of(adl.Class("something", attr={"a": 3, "b": 4}))
-        )
-        self.assertFalse(
             self._class.is_genus_of(
-                adl.Class("something", attr={"a": 3, "b": 4, "c": 5})
+                adl.AdjunctClass("something", attr={"a": 3, "b": 4})
             )
         )
         self.assertFalse(
             self._class.is_genus_of(
-                adl.Class("something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5})
+                adl.AdjunctClass("something", attr={"a": 3, "b": 4, "c": 5})
+            )
+        )
+        self.assertFalse(
+            self._class.is_genus_of(
+                adl.AdjunctClass(
+                    "something", {"x": lambda: 5}, attr={"a": 3, "b": 4, "c": 5}
+                )
             )
         )
 
@@ -245,10 +275,12 @@ class TestContianerClass(unittest.TestCase):
     def setUp(self) -> None:
         self.thing = adl.Thing.from_attr({"a": 1, "b": 2})
 
-        self.container_class = adl.Class("container", has={"contains": lambda: []})
+        self.container_class = adl.AdjunctClass(
+            "container", has={"contains": lambda: []}
+        )
         self.container_thing = self.container_class.create()
 
-        self.thing_container_class = adl.Class(
+        self.thing_container_class = adl.AdjunctClass(
             "thingContainer", attr={"contains": [self.thing]}
         )
 
@@ -276,13 +308,13 @@ class TestContianerClass(unittest.TestCase):
 class TestClassCraeteFrom(unittest.TestCase):
     def setUp(self) -> None:
 
-        self._class = adl.Class(
+        self._class = adl.AdjunctClass(
             "something", has={"c": lambda: 1}, attr={"a": 1, "b": 2}
         )
 
     def test_has(self):
 
-        t = adl.Class.create_from("sub", self._class, has={"d": lambda: 1})
+        t = adl.AdjunctClass.create_from("sub", self._class, has={"d": lambda: 1})
 
         self.assertTrue("c" in t.has)
         self.assertTrue("d" in t.has)
@@ -296,7 +328,7 @@ class TestClassCraeteFrom(unittest.TestCase):
 
     def test_attr(self):
 
-        t = adl.Class.create_from("sub", self._class, attr={"d": 1})
+        t = adl.AdjunctClass.create_from("sub", self._class, attr={"d": 1})
 
         self.assertTrue("c" in t.has)
         self.assertTrue("d" in t.attr)
@@ -309,7 +341,7 @@ class TestClassCraeteFrom(unittest.TestCase):
         self.assertFalse("b" in t.has)
 
     def test_species(self):
-        t = adl.Class.create_from("sub", self._class, has={"d": lambda: 1})
+        t = adl.AdjunctClass.create_from("sub", self._class, has={"d": lambda: 1})
 
         self.assertTrue(t.is_species_of(self._class))
 
