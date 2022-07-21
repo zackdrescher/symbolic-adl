@@ -2,6 +2,9 @@ from typing import List
 
 
 class Thing:
+    """A thing is an object that has attributes.
+    Things typically represent extant objects in the world."""
+
     def __init__(self):
         self.attr = {}
 
@@ -45,6 +48,11 @@ class Thing:
 
 
 class Class:
+    """A class a set of attributes that describte a type of thing.
+    Classes can represent a group of things, or a an individual thing.
+    Classes can describe things that have a specific attribute or specific
+    values of a specific attribute."""
+
     @classmethod
     def create_from(
         cls, name: str, c: "Class", has: dict = {}, attr: dict = {}
@@ -107,6 +115,11 @@ def is_species(genus: Class, species: Class) -> bool:
 
 
 class Universe:
+    """A universe is a collection of things.
+    In principle, the universe is the collection of ALL things. However
+    practically, it can be considered as a collection of things of a specific class.
+    A Clases can be sampled from universes."""
+
     def __init__(self):
         self.things = []
 
