@@ -1,7 +1,7 @@
 from enum import Enum, unique, auto
 import random
 
-from . import symblog
+from . import symlog
 
 
 def get_random_member(enum: Enum) -> Enum:
@@ -68,11 +68,11 @@ class MajorArcana(RandomEnum):
 
 if __name__ == "__main__":
 
-    ma = symblog.AdjunctClass(
+    ma = symlog.AdjunctClass(
         "minorArcana", {"faceValue": FaceValues.get_random, "suit": Suits.get_random}
     )
 
-    k = symblog.AdjunctClass(
+    k = symlog.AdjunctClass(
         "kingdom", has={"units": lambda: [ma.create() for _ in range(4)]}
     )
 
