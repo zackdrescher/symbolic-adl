@@ -48,8 +48,8 @@ class Thing:
 
 
 class AdjunctClass:
-    """A class a set of attributes that describte a type of thing.
-    Classes can represent a group of things, or a an individual thing.
+    """An Adjunct Class (i.e. class) a set of attributes that describes a type
+    of thing. Classes can represent a group of things, or a an individual thing.
     Classes can describe things that have a specific attribute or specific
     values of a specific attribute."""
 
