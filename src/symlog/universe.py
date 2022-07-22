@@ -11,6 +11,22 @@ class Universe:
     practically, it can be considered as a collection of things of a specific class.
     A Clases can be sampled from universes."""
 
+    @classmethod
+    def from_things(cls, things: List[Thing]) -> "Universe":
+        universe = cls()
+        universe.add_things(things)
+        return universe
+
+    @classmethod
+    def from_attrs(cls, attrs: List[dict]) -> "Universe":
+        universe = cls()
+        universe.add_things([Thing.from_attr(attr) for attr in attrs])
+        return universe
+
+    @classmethod
+    def generate_from_class(cls, _class: AdjunctClass, n: int) -> "Universe":
+        return cls.from_things(_class.create_n(n))
+
     def __init__(self):
         self.things = []
 

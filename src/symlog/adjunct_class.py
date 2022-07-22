@@ -66,6 +66,9 @@ class AdjunctClass:
     def create(self) -> Thing:
         return Thing.from_attr({**self.generate(), **self.attr})
 
+    def create_n(self, n: int) -> List[Thing]:
+        return [self.create() for _ in range(n)]
+
     def is_species_of(self, other: "AdjunctClass") -> bool:
         return is_species(other, self)
 
