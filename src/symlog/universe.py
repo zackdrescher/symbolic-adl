@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Dict
 
+from ..adl import Action
 from .adjunct_class import AdjunctClass
 from .thing import Thing
 
@@ -31,3 +32,24 @@ class Universe:
 
     def individual(self, _class: AdjunctClass) -> Thing:
         return len(self.get_class(_class)) == 1
+
+    def do(self, action: Action, n: int = 1):
+
+        precondition_things = self.get_action_operands(action)
+
+        for name, things in precondition_things.items():
+            if len(things) < n:
+                raise Exception(
+                    f"Not enough preconditions for {n} executions of action: {name}: {len(things)}"
+                )
+        out_ops = []
+        for i in range(n):
+            ops = {op: things[i] for op, things in precondition_things.items()}
+            action.execute(ops)
+            out_ops.append(ops)
+
+        return out_ops
+
+    def get_action_operands(self, action: Action) -> Dict[str, List[Thing]]:
+        # NOTE: (ZD) this will return the operands in the order which they are found.
+        return {op: self.get_class(c) for op, c in action.preconditions.items()}
