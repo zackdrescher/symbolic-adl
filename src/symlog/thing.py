@@ -1,3 +1,4 @@
+from numbers import Number
 from typing import List
 
 
@@ -41,3 +42,11 @@ class Thing:
             raise ValueError(f"{attr} is not a collection")
 
         return thing in attr
+
+    def incr(self, attr: str, amount: int = 1) -> None:
+        if not self.has(attr):
+            raise ValueError(f"{self} does not have {attr}")
+        if not isinstance(self.attr[attr], Number):
+            raise ValueError(f"{self}'s {attr} is not a number")
+
+        self.attr[attr] += amount
