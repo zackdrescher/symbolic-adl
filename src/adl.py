@@ -13,7 +13,7 @@ class Action:
 
         self.name = name
         self.preconditions = preconditions
-        self.effect = effect
+        self.effects = effect
 
     def __str__(self):
         return self.name
@@ -26,12 +26,12 @@ class Action:
         if isinstance(other, Action):
             return (
                 self.preconditions == other.preconditions
-                and self.effect == other.effect
+                and self.effects == other.effects
             )
 
         return False
 
     def do(self, things: Dict[str, Thing]):
-        for op, e in self.effect.items():
+        for op, e in self.effects.items():
             thing = things[op]
             e(thing)
