@@ -64,7 +64,7 @@ class Universe:
         out_ops = []
         for i in range(n):
             ops = {op: things[i] for op, things in precondition_things.items()}
-            action.execute(ops)
+            action.do(ops)
             out_ops.append(ops)
 
         return out_ops
