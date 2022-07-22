@@ -39,6 +39,9 @@ class Universe:
     def add_thing(self, thing: dict):
         self.things.append(Thing.from_attr(thing))
 
+    def __len__(self):
+        return len(self.things)
+
     def get_class(self, _class: AdjunctClass) -> List[Thing]:
 
         return [thing for thing in self.things if _class.is_member(thing)]
